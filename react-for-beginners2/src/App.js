@@ -1,40 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { logDOM } from "@testing-library/react";
 
-const App = () => {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => {
-    setToDo(event.target.value);
-  };
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if (toDo === "") {
-      return;
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [coins, setCoins] = useState([]);
+  const [myCoins, setMyCoins] = useState([]);
+  const [myMoney, setMyMoney] = useState("");
+  const [myCoinCount, setMyCoinCount] = useState(0);
+
+  console.log("rendered");
+  //only once
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((response) => response.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (myMoney) {
+      setLoading(false);
+      setMyCoins(coins.filter((coin) => coin.quotes.USD.price < myMoney));
+      setMyCoinCount(
+        coins.filter((coin) => coin.quotes.USD.price < myMoney).length
+      );
     }
-    setToDo("");
-    setToDos((currentArray) => [toDo, ...currentArray]);
+  }, [myMoney]);
+
+  const onChange = (event) => {
+    setLoading(true);
+    setMyMoney(event.target.value);
   };
-  console.log(toDos);
+
   return (
     <div>
-      <h1>My To Dos ({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onChange}
-          value={toDo}
-          type="text"
-          placeholder="Write your to do..."
-        />
-        <button>Add To Do</button>
-      </form>
-      <hr />
+      <h1>The Coins! ({myMoney ? myCoinCount : coins.length})</h1>
+      {loading ? <strong>Loading...</strong> : null}
+      <input
+        type="number"
+        placeholder="insert your money"
+        value={myMoney}
+        onChange={onChange}
+      />
       <ul>
-        {toDos.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
+        {myMoney
+          ? myCoins?.map((coin) => (
+              <li key={coin.id}>
+                {coin.name} ({coin.symbol}): {coin.quotes.USD.price * 0.000033}{" "}
+                BTC
+              </li>
+            ))
+          : coins?.map((coin) => (
+              <li key={coin.id}>
+                {coin.name} ({coin.symbol}): {coin.quotes.USD.price * 0.000033}{" "}
+                BTC
+              </li>
+            ))}
       </ul>
     </div>
   );
-};
+}
 
 export default App;
