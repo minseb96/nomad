@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import styles from "../styles/Detail.module.css";
+import styles from "./Detail.module.css";
 
 const Detail = () => {
   const { id } = useParams();
@@ -28,18 +28,35 @@ const Detail = () => {
           <h1>
             {info.data.movie.title}({info.data.movie.year})
           </h1>
-          <div className={styles.starRateContainer}>
+          <div>
             <span>Rate : </span>
-            <span>★</span>
-            <span>★</span>
-            <span>★</span>
-            <span>★</span>
-            <span>★</span>
+
+            <span className={styles.starRateContainer}>
+              <span className={styles.starRateBase}>
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+              </span>
+
+              <span
+                className={styles.starRateColored}
+                style={{ width: `${(info.data.movie.rating + 0.25) * 10}%` }}
+              >
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+                <span>★</span>
+              </span>
+            </span>
+            <span> ({info.data.movie.rating})</span>
           </div>
           <iframe
             width="420"
             height="315"
-            src="https://www.youtube.com/embed/A7DgDpURLRY"
+            src={`https://www.youtube.com/embed/${info.data.movie.yt_trailer_code}`}
           />
           <p>{info.data.movie.description_full}</p>
         </div>

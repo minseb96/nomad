@@ -1,0 +1,19 @@
+.starRateContainer{
+    position: relative;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-color: black;
+    -webkit-text-stroke-width: 1px;
+}
+
+.starRateColored{
+    z-index: 1;
+    position: absolute;
+    -webkit-text-fill-color: gold;
+    top:0;
+    left: 0;
+    overflow: hidden;
+}
+
+.starRateBase {
+    z-index: 0;
+}
